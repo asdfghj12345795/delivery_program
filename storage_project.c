@@ -94,6 +94,12 @@ static int inputPasswd(int x, int y) {
 //char* filepath : filepath and name to write
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
+
+	// open the entered file as 'fopen'
+	
+	// copy the contents of the delivery system as a function of "w" to open files
+	
+	// if (fp=NULL) = Fail- --> No content
 	
 }
 
@@ -104,10 +110,17 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 	
+	//allocate memory using dynamic memory allocation to deluverySytem structure
+	
+	// use 'if' to confirm allocated memory is NULL
 }
 
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
+	
+	// clear memory of deliverySystem allocated to dynamic memory
+	
+	//free (pointor for dynamic memory)
 	
 }
 
