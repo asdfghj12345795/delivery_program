@@ -51,7 +51,9 @@ static void printStorageInside(int x, int y) {
 //and allocate memory to the context pointer
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
-		deliverySystem[x][y].building = NULL; //Initialize corresponding memory values using NULL to initialize one stowage box.
+		//Initialize corresponding memory values using NULL to initialize one storage box by susing NULL.
+		// date of byte can be removed by NULL
+		deliverySystem[x][y].building = NULL; 
 		deliverySystem[x][y].room = NULL;		
 		deliverySystem[x][y].cnt = NULL;
 		deliverySystem[x][y].passwd = NULL;
@@ -64,15 +66,19 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
 		
-		char try_passwd[PASSWD_LEN+1];
-		printf("Please enter your password.\n"); //Enter Password
+		char try_passwd[PASSWD_LEN+1]; // password that the user typed
+		
+		// Enter Password for only user.
+		printf("Please enter your password.\n"); 
 		scanf("%s", &try_passwd);
 		
-		if(try_passwd == deliverySystem[x][y].passwd) //Compare the entered password with the specific locker password
+		//Compare the entered password with the specific locker password
+		if(try_passwd == deliverySystem[x][y].passwd) 
 		{
 			return 0;
 		 } 
 		 
+		 // if the password is not matching, notice user that It is wong password and return.
 		else 
 		{
 			printf("It's wrong password. Please check it.\n");
@@ -115,18 +121,18 @@ void str_printStorageStatus(void) {
 	printf("\t");
 	for (j=0;j<systemSize[1];j++)
 	{
-		printf(" %i\t\t",j);
+		printf(" %d\t\t",j);
 	}
 	printf("\n-----------------------------------------------------------------------------------------------------------------\n");
 	
 	for (i=0;i<systemSize[0];i++)
 	{
-		printf("%i|\t",i);
+		printf("%d|\t",i);
 		for (j=0;j<systemSize[1];j++)
 		{
 			if (deliverySystem[i][j].cnt > 0)
 			{
-				printf("%i,%i\t|\t", deliverySystem[i][j].building, deliverySystem[i][j].room);
+				printf("%d,%d\t|\t", deliverySystem[i][j].building, deliverySystem[i][j].room);
 			}
 			else
 			{
@@ -184,17 +190,20 @@ int str_extractStorage(int x, int y) {
 		printf("Please enter your password.\n"); //Enter Password
 		scanf("%s", &try_passwd);
 		
-		 
-		if (try_passwd ! = deliverySystem[x][y].passwd) //Compare the entered password with the specific locker password
+		 //Compare the entered password with the specific locker password
+		if (try_passwd ! = deliverySystem[x][y].passwd) 
 		{
 			printf("It's wrong password. Please check it.\n");
 			return -1;	// failed ot extract.		
 		 }
 		 
 		else
-		{
-			printf("THE context of package is %s", deliverySystem[x][y].context); //check the context of the storage
-			initStorage(x,y); // after extract the context, initialize the storage (x,y)
+		{	
+			//check the context of the storage
+			printf("THE context of package is %s", deliverySystem[x][y].context); 
+			// after extract the context, initialize the storage (x,y)
+			initStorage(x,y); 
+			
 			return 0;
 		  }  
 	 
@@ -207,12 +216,28 @@ int str_extractStorage(int x, int y) {
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
 	
-	printf(" input yout building number and room number : ");
-	scanf("%d %d", &nBuilding, &nRoom);
+	int x; //the variable about the row 
+	int y; //the varialbe about the colunm
+	 
+	//Check from all structured arrangement to the last parcel shelf
 	
-	if(deliverSystem.building == nBuilding && deliverySystem.room ==nRoom)
+	// there are a total of 6 columns, so the number of the last column number 5.
+	for(y=0;y<6;y++)
 	{
-	
+		// there are a total of 4 rows, so the number of the last column number 3.
+		for(x=0;x<4;x++)
+		{
+	 		//Determine if the number of the building entered and the room number match the building number and the room number of the structure. 
+			if(deliverSystem.[x][y]building == nBuilding && deliverySystem.room[x][y] ==nRoom)
+			{		
+				//print the all the cells (x,y) which has user package
+				printf("The user(live in room %d, building %d)'s package is in (%d,%d)\n", nRoom, nBuildig, x,y);
+				
+				//return the number of packages the the storage system have
+				return (deliverySystem.building[x][y].cnt);
+			}
+		}
 	}
-	return cnt;
+	
+	
 }
