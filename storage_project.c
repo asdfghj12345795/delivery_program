@@ -94,13 +94,24 @@ static int inputPasswd(int x, int y) {
 //char* filepath : filepath and name to write
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
-
-	// open the entered file as 'fopen'
 	
+	filepath = NULL;
+	
+	// open the entered file as 'fopen'
 	// copy the contents of the delivery system as a function of "w" to open files
+	// the name of file path is determined "STORAGE_FILEPATH" by macro in file main.c
+	  
+	filepath ==fopen("STORAGE_FILEPATH","w");
 	
 	// if (fp=NULL) = Fail- --> No content
+	if(filepath==NULL)
+	{
+		printf("Can't work well");
+		return -1;
+	}
 	
+	fclose(filepath);
+	return 0;
 }
 
 
@@ -110,17 +121,35 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 	
-	//allocate memory using dynamic memory allocation to deluverySytem structure
+	int i;
 	
+	//allocate memory using dynamic memory allocation to deluverySytem structure
+	deliverySystem = (storage_t**)malloc(4*sizeof(storage_t*));
+	for(i=0;i<4;i++)
+	{
+		deliverySystem[i]=(storage_t*)malloc(6* sizeof(storage_t));		
+	}
 	// use 'if' to confirm allocated memory is NULL
+	if(deliverySystem==NULL)
+	{
+			printf("Dynamic memory allocation error");
+			
+			//failed to creat te system.
+			return -1;
+	}
+	
+	//successfully create.
+	return 0;
 }
 
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
 	
 	// clear memory of deliverySystem allocated to dynamic memory
-	
-	//free (pointor for dynamic memory)
+	// free (pointor for dynamic memory)
+	free(deliverySystem);
+	return 0;
+
 	
 }
 
