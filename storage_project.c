@@ -3,6 +3,17 @@
 #include <string.h>
 #include "storage.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "storage.h"
+
+#define N_BUILDING				10
+#define N_FLOOR					10
+#define N_ROOM					10
+
+#define MAX_MSG_SIZE			100
+#define PASSWD_LEN				4
+
 /* 
   definition of storage cell structure ----
   members :
@@ -56,7 +67,7 @@ static void initStorage(int x, int y) {
 		deliverySystem[x][y].building = NULL; 
 		deliverySystem[x][y].room = NULL;		
 		deliverySystem[x][y].cnt = NULL;
-		deliverySystem[x][y].passwd = NULL;
+		deliverySystem[x][y].passwd[PASSWD_LEN+1] = NULL;
 		deliverySystem[x][y].context = NULL;		
 		
 }
@@ -214,7 +225,7 @@ int str_checkStorage(int x, int y) {
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 		deliverySystem[x][y].building = nBuilding;
 		deliverySystem[x][y].room = nRoom ;
-		deliverySystem[x][y].passwd = passwd;
+		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd;
 		deliverySystem[x][y].context = msg;
 		deliverySystem[x][y].cnt ++;
 }
@@ -233,7 +244,7 @@ int str_extractStorage(int x, int y) {
 		scanf("%s", &try_passwd);
 		
 		 //Compare the entered password with the specific locker password
-		if (try_passwd ! = deliverySystem[x][y].passwd) 
+		if (deliverySystem[x][y].passwd!=try_passwd) 
 		{
 			printf("It's wrong password. Please check it.\n");
 			return -1;	// failed ot extract.		
@@ -270,13 +281,13 @@ int str_findStorage(int nBuilding, int nRoom) {
 		for(x=0;x<4;x++)
 		{
 	 		//Determine if the number of the building entered and the room number match the building number and the room number of the structure. 
-			if(deliverSystem.[x][y]building == nBuilding && deliverySystem.room[x][y] ==nRoom)
+			if(deliverySystem[x][y].building == nBuilding && deliverySystem[x][y].room ==nRoom)
 			{		
 				//print the all the cells (x,y) which has user package
-				printf("The user(live in room %d, building %d)'s package is in (%d,%d)\n", nRoom, nBuildig, x,y);
+				printf("The user(live in room %d, building %d)'s package is in (%d,%d)\n", nRoom, nBuilding, x,y);
 				
 				//return the number of packages the the storage system have
-				return (deliverySystem.building[x][y].cnt);
+				return (deliverySystem[x][y].cnt);
 			}
 		}
 	}
