@@ -35,7 +35,7 @@ typedef struct {
 
 static storage_t** deliverySystem; 			//deliverySystem
 static int storedCnt = 0;					//number of cells occupied
-static int systemSize[2] = {0, 0};  		//row/column of the delivery system
+static int systemSize[2] = {4, 6};  		//row/column of the delivery system
 static char masterPassword[PASSWD_LEN+1];	//master password
 
 
@@ -228,6 +228,7 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd;
 		deliverySystem[x][y].context = msg;
 		deliverySystem[x][y].cnt ++;
+		storedCnt++;
 }
 
 
