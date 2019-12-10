@@ -133,18 +133,19 @@ int str_backupSystem(char* filepath) {
 int str_createSystem(char* filepath) {
 	
 	// i = column / j = row
-	FILE* fp;
-	fp = filepath;
+	FILE* filepath;
 	int i,j;
 	int a,b; // to use the circular 
+	int x,y; // accordinate the package location
+	
 	
 	//file open 
-	fp = fopen("fp","r");
+	filepath = fopen("storage.txt","r");
 	
 	//read row and column number from filepath
-	fscanf(fp,"%d %d", &i,&j);
+	fscanf(filepath,"%d %d", &i,&j);
 	
-	fclose(fp);
+
 	//systemSize[0]  : row, systemSize[1] : column
 	systemSize[0] = j;
 	systemSize[1] = i;
@@ -172,14 +173,27 @@ int str_createSystem(char* filepath) {
 			return -1;
 	}
 	
-	//successfully create.
-	return 0;
-	
 	// masterpassword create by the storage.txt
-	
-	// create the *context 
+	fscanf(filepath,"4%d", masterPassword);
+	 
+	// create the *context
+	context =(char*)malloc(100*sizeof(char));
 	
 	// put the package accroding to storage.txt file (first of all have to read it)
+	while( (c =fgetc(filepath))!= EOF)
+	{
+		fscanf(filepath,"%d %d", &x, &y);
+		fscanf(filepath,"%d", deliverySystem[x][y].building);
+		fscanf(filepath,"%d", deliverySystem[x][y].room);
+		deliverySystem[x][y].cnt++;
+		fscanf(filepath,"%s", deliverySystem[x][y].passwd[PASSWD_LEN+1]);
+		fscanf(filepath,"%s", deliverySystem[x][y].context);
+	}
+	
+	
+	fclose(filepath);
+	//successfully create.
+	return 0;
 	
 }
 
@@ -190,6 +204,7 @@ void str_freeSystem(void) {
 	// free (pointor for dynamic memory)
 	free(deliverySystem);
 	return 0;
+	//이차원 배열 동적 할당 지우기  
 
 	
 }
