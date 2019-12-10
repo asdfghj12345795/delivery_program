@@ -131,19 +131,18 @@ int str_backupSystem(char* filepath) {
 //char* filepath : filepath and name to read config parameters (row, column, master password, past contexts of the delivery system
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
-	
 	// i = column / j = row
-	FILE* filepath;
 	int i,j;
 	int a,b; // to use the circular 
 	int x,y; // accordinate the package location
-	
+	FILE* fp;	
+	fp = filepath;
 	
 	//file open 
-	filepath = fopen("storage.txt","r");
+	fp = fopen("filepath","r");
 	
 	//read row and column number from filepath
-	fscanf(filepath,"%d %d", &i,&j);
+	fscanf(fp,"%d %d", &i,&j);
 	
 
 	//systemSize[0]  : row, systemSize[1] : column
@@ -174,24 +173,24 @@ int str_createSystem(char* filepath) {
 	}
 	
 	// masterpassword create by the storage.txt
-	fscanf(filepath,"4%d", masterPassword);
+	fscanf(fp,"4%d", masterPassword);
 	 
 	// create the *context
-	context =(char*)malloc(100*sizeof(char));
+	storage_t.context = (char*)malloc(100*sizeof(char));
 	
 	// put the package accroding to storage.txt file (first of all have to read it)
-	while( (c =fgetc(filepath))!= EOF)
+	while( (c =fgetc(fp))!= EOF)
 	{
-		fscanf(filepath,"%d %d", &x, &y);
-		fscanf(filepath,"%d", deliverySystem[x][y].building);
-		fscanf(filepath,"%d", deliverySystem[x][y].room);
+		fscanf(fp,"%d %d", &x, &y);
+		fscanf(fp,"%d", deliverySystem[x][y].building);
+		fscanf(fp,"%d", deliverySystem[x][y].room);
 		deliverySystem[x][y].cnt++;
-		fscanf(filepath,"%s", deliverySystem[x][y].passwd[PASSWD_LEN+1]);
-		fscanf(filepath,"%s", deliverySystem[x][y].context);
+		fscanf(fp,"%s", deliverySystem[x][y].passwd[PASSWD_LEN+1]);
+		fscanf(fp,"%s", deliverySystem[x][y].context);
 	}
 	
 	
-	fclose(filepath);
+	fclose(fp);
 	//successfully create.
 	return 0;
 	
@@ -200,8 +199,15 @@ int str_createSystem(char* filepath) {
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
 	
+	int i;
+	
 	// clear memory of deliverySystem allocated to dynamic memory
 	// free (pointor for dynamic memory)
+	//systemSize[1] is the column 
+	// delete the memory of dynamic
+	for(i=0;i<systemSize[1];i++)
+		
+	
 	free(deliverySystem);
 	return 0;
 	//이차원 배열 동적 할당 지우기  
