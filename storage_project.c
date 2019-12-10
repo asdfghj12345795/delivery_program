@@ -132,15 +132,38 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 	
-	int i;
+	// i = column / j = row
+	FILE* fp;
+	fp = filepath;
+	int i,j;
+	int a,b; // to use the circular 
+	
+	//file open 
+	fp = fopen("fp","r");
+	
+	//read row and column number from filepath
+	fscanf(fp,"%d %d", &i,&j);
+	
+	fclose(fp);
+	//systemSize[0]  : row, systemSize[1] : column
+	systemSize[0] = j;
+	systemSize[1] = i;
 	
 	//allocate memory using dynamic memory allocation to deluverySytem structure
-	deliverySystem = (storage_t**)malloc(4*sizeof(storage_t*));
-	for(i=0;i<4;i++)
+	deliverySystem = (storage_t**)malloc(systemSize[1]*sizeof(storage_t*));
+	for(a=0;a<systemSize[1];a++)
 	{
-		deliverySystem[i]=(storage_t*)malloc(6* sizeof(storage_t));		
+		deliverySystem[a]=(storage_t*)malloc(systemSize[0]* sizeof(storage_t));		
 	}
 	// use 'if' to confirm allocated memory is NULL
+	for(a=0;a<systemSize[0];a++)
+	{
+		for(b=0;b<systemSize[1];b++)
+		{
+			deliverySystem[a][b].cnt = 0;
+		}
+	}
+	
 	if(deliverySystem==NULL)
 	{
 			printf("Dynamic memory allocation error");
@@ -151,6 +174,13 @@ int str_createSystem(char* filepath) {
 	
 	//successfully create.
 	return 0;
+	
+	// masterpassword create by the storage.txt
+	
+	// create the *context 
+	
+	// put the package accroding to storage.txt file (first of all have to read it)
+	
 }
 
 //free the memory of the deliverySystem 
@@ -222,7 +252,7 @@ int str_checkStorage(int x, int y) {
 //char msg[] : package context (message string)
 //char passwd[] : password string (4 characters)
 //return : 0 - successfully put the package, -1 - failed to put
-int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
+int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char passwd[PASSWD_LEN+1], char msg[MAX_MSG_SIZE+1]) {
 		deliverySystem[x][y].building = nBuilding;
 		deliverySystem[x][y].room = nRoom ;
 		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd;
