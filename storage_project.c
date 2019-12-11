@@ -35,7 +35,7 @@ typedef struct {
 
 static storage_t** deliverySystem; 			//deliverySystem
 static int storedCnt = 0;					//number of cells occupied
-static int systemSize[2] = {4, 6};  		//row/column of the delivery system
+static int systemSize[2] = {0, 0};  		//row/column of the delivery system
 static char masterPassword[PASSWD_LEN+1];	//master password
 
 
@@ -59,7 +59,6 @@ static void printStorageInside(int x, int y) {
 
 //initialize the storage
 //set all the member variable as an initial value
-//and allocate memory to the context pointer
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 		//Initialize corresponding memory values using NULL to initialize one storage box by susing NULL.
@@ -69,7 +68,6 @@ static void initStorage(int x, int y) {
 		deliverySystem[x][y].cnt = NULL;
 		deliverySystem[x][y].passwd[PASSWD_LEN+1] = NULL;
 		deliverySystem[x][y].context = NULL;		
-		
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -106,22 +104,22 @@ static int inputPasswd(int x, int y) {
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
 	
-	filepath = NULL;
+	FILE* fp;
 	
 	// open the entered file as 'fopen'
 	// copy the contents of the delivery system as a function of "w" to open files
 	// the name of file path is determined "STORAGE_FILEPATH" by macro in file main.c
 	  
-	filepath ==fopen("STORAGE_FILEPATH","w");
+	fp =fopen(filepath,"w");
 	
 	// if (fp=NULL) = Fail- --> No content
-	if(filepath==NULL)
+	if(fp==NULL)
 	{
 		printf("Can't work well");
 		return -1;
 	}
 	
-	fclose(filepath);
+	fclose(fp);
 	return 0;
 }
 
@@ -132,37 +130,38 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 	// i = column / j = row
-	int i,j;
-	int a,b; // to use the circular 
-	int x,y; // accordinate the package location
-	FILE* fp;	
-	fp = filepath;
-	
+	int i,j;  // to use the circular 
+	int inputrow,inputcolumn; // accordinate the package location
+	FILE* fp;
+	char c;
+	char* context;
+		
 	//file open 
-	fp = fopen("filepath","r");
+	fp = fopen(filepath,"r");
 	
-	//read row and column number from filepath
-	fscanf(fp,"%d %d", &i,&j);
-	
-
 	//systemSize[0]  : row, systemSize[1] : column
-	systemSize[0] = j;
-	systemSize[1] = i;
+	//read row, column number and masterpassword from filepath
+	// masterpassword create by the storage.txt
+	fscanf(fp, "%d %d %s", &systemSize[0], &systemSize[1], masterPassword);
 	
 	//allocate memory using dynamic memory allocation to deluverySytem structure
+	
 	deliverySystem = (storage_t**)malloc(systemSize[1]*sizeof(storage_t*));
-	for(a=0;a<systemSize[1];a++)
-	{
-		deliverySystem[a]=(storage_t*)malloc(systemSize[0]* sizeof(storage_t));		
-	}
-	// use 'if' to confirm allocated memory is NULL
-	for(a=0;a<systemSize[0];a++)
-	{
-		for(b=0;b<systemSize[1];b++)
+		for(i=0;i<systemSize[1];i++)
 		{
-			deliverySystem[a][b].cnt = 0;
+			deliverySystem[i]=(storage_t*)malloc(systemSize[0]* sizeof(storage_t));		
 		}
-	}
+
+		
+	// use 'if' to confirm allocated memory is NULL
+	for(i=0;i<systemSize[i];i++)
+		{
+			for(j=0;j<systemSize[1];j++)
+			{
+				deliverySystem[i][j].cnt = 0;
+			}
+		}
+	
 	
 	if(deliverySystem==NULL)
 	{
@@ -172,23 +171,27 @@ int str_createSystem(char* filepath) {
 			return -1;
 	}
 	
-	// masterpassword create by the storage.txt
-	fscanf(fp,"4%d", masterPassword);
-	 
-	// create the *context
-	storage_t.context = (char*)malloc(100*sizeof(char));
+	// create the *context by the number of string
+	for(i=0;i<systemSize[0];i++)
+	 {
+		for(j=0;j<systemSize[1];j++)
+			//Allocate as many memory as the number of courier strings ~ using function of "strlen"
+			//
+			deliverySystem[i][j].context = (char *)malloc(strlen(*context)* sizeof(char));
+	 }
 	
 	// put the package accroding to storage.txt file (first of all have to read it)
 	while( (c =fgetc(fp))!= EOF)
 	{
-		fscanf(fp,"%d %d", &x, &y);
-		fscanf(fp,"%d", deliverySystem[x][y].building);
-		fscanf(fp,"%d", deliverySystem[x][y].room);
-		deliverySystem[x][y].cnt++;
-		fscanf(fp,"%s", deliverySystem[x][y].passwd[PASSWD_LEN+1]);
-		fscanf(fp,"%s", deliverySystem[x][y].context);
-	}
+		// put the package accroding to storage.txt file (first of all have to read it)
+		//read the file text in order of building number, room number, password, contents,
+		fscanf(fp, "%d %d %s", &systemSize[0], &systemSize[1], masterPassword);
+		fscanf(fp, "%d %d %s %s", &deliverySystem[inputrow][inputcolumn].building, &deliverySystem[inputrow][inputcolumn].room,
+								  deliverySystem[inputrow][inputcolumn].passwd, deliverySystem[i][j].context);
 	
+		// and add 1 to the package cnt(count in the cell) 
+		deliverySystem[inputrow][inputcolumn].cnt++;
+	}
 	
 	fclose(fp);
 	//successfully create.
@@ -206,11 +209,8 @@ void str_freeSystem(void) {
 	//systemSize[1] is the column 
 	// delete the memory of dynamic
 	for(i=0;i<systemSize[1];i++)
-		
-	
+		free(deliverySystem[i]);
 	free(deliverySystem);
-	return 0;
-	//이차원 배열 동적 할당 지우기  
 
 	
 }
@@ -296,12 +296,26 @@ int str_extractStorage(int x, int y) {
 		scanf("%s", &try_passwd);
 		
 		 //Compare the entered password with the specific locker password
-		if (deliverySystem[x][y].passwd!=try_passwd) 
+		 //strcmp = if the two of strings are same, print 0
+		 //			if not, don't print 0
+		if (strcmp(deliverySystem[x][y].passwd,try_passwd)!=0) 
 		{
 			printf("It's wrong password. Please check it.\n");
 			return -1;	// failed ot extract.		
 		 }
 		 
+		// if the try_passwd is masterpassword, the storage should open
+		//strcmp = if the two of strings are same, print 0
+		//			if not, don't print 0
+		else if(strcmp(try_passwd,masterPassword)==0)
+		{
+			//check the context of the storage
+			printf("THE context of package is %s", deliverySystem[x][y].context); 
+			// after extract the context, initialize the storage (x,y)
+			initStorage(x,y); 
+			
+		}
+
 		else
 		{	
 			//check the context of the storage
@@ -309,10 +323,10 @@ int str_extractStorage(int x, int y) {
 			// after extract the context, initialize the storage (x,y)
 			initStorage(x,y); 
 			
-			return 0;
+			
 		  }  
 	 
-	
+	return 0;
 }
 
 //find my package from the storage
