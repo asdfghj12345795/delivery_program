@@ -62,10 +62,12 @@ static void printStorageInside(int x, int y) {
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 		//Initialize corresponding memory values using NULL to initialize one storage box by susing NULL.
-		// date of byte can be removed by NULL
+		// date of byte can be removed by 0
 		deliverySystem[x][y].building = 0; 
 		deliverySystem[x][y].room = 0;		
 		deliverySystem[x][y].cnt = 0;
+		
+		//Initialization of string is achieved using '\0'
 		deliverySystem[x][y].passwd[PASSWD_LEN+1] = '\0';
 		deliverySystem[x][y].context = '\0';		
 }
@@ -99,6 +101,7 @@ static int inputPasswd(int x, int y) {
 			return 0; //success
 		}
 
+		//the situation, tyr_passwd and passwd are the same
 		else
 		{	
 			return 0; // success
@@ -120,12 +123,10 @@ int str_backupSystem(char* filepath) {
 	int i_row, j_column;
 	
 	// open the entered file as 'fopen'
-	// copy the contents of the delivery system as a function of "w" to open files
-	// the name of file path is determined "STORAGE_FILEPATH" by macro in file main.c
-	  
+	// copy the contents of the delivery system as a function of "w"(function of write) to open files
 	fp =fopen(filepath,"w");
 	
-	// if (fp=NULL), Fail
+	// if (fp=NULL), Fail to open
 	if(fp==NULL)
 	{
 		printf("Can't work well for open the file.\n");
@@ -133,7 +134,6 @@ int str_backupSystem(char* filepath) {
 	}
 	
 	//Enter current storage() status in txt file 
-
 	//Repeat to verify that content is ingested throughout the storage.	
 	//systemSize[0] : row , systemSize[1] : column 
 	
@@ -146,8 +146,8 @@ int str_backupSystem(char* filepath) {
 			//If deliverySystem.cnt is greater than 0, input the value stored deliverySystem in the filepath
 			if(deliverySystem[i_row][j_column].cnt>0)
 			{
-				// order of saving 
-					// row, column, building, room, password, context
+				//print the storage system status and setting value 
+				// order of saving >>> row, column, building, room, password, context
 				fprintf(fp,"%d %d %d %d %s %s", i_row, j_column, deliverySystem[i_row][j_column].building,
 												deliverySystem[i_row][j_column].room, deliverySystem[i_row][j_column].passwd,
 												deliverySystem[i_row][j_column].context);
@@ -172,6 +172,7 @@ int str_createSystem(char* filepath) {
 	FILE* fp;
 	char c;
 	char* context;
+	
 		
 	//file open 
 	fp = fopen(filepath,"r");
@@ -213,7 +214,8 @@ int str_createSystem(char* filepath) {
 	 {
 		for(j=0;j<systemSize[1];j++)
 			//Allocate as many memory as the number of courier strings ~ using function of "strlen"
-			//
+			//Set context memory according to the size of the string.
+			//Length of string: strlen (entered string)
 			deliverySystem[i][j].context = (char *)malloc(strlen(context)* sizeof(char));
 	 }
 	
@@ -222,7 +224,6 @@ int str_createSystem(char* filepath) {
 	{
 		// put the package accroding to storage.txt file (first of all have to read it)
 		//read the file text in order of building number, room number, password, contents,
-		fscanf(fp, "%d %d %s", &systemSize[0], &systemSize[1], masterPassword);
 		fscanf(fp, "%d %d %s %s", &deliverySystem[inputrow][inputcolumn].building, &deliverySystem[inputrow][inputcolumn].room,
 								  deliverySystem[inputrow][inputcolumn].passwd, deliverySystem[i][j].context);
 	
