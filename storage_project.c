@@ -83,9 +83,10 @@ static int inputPasswd(int x, int y) {
 		
 	
 		 //Compare the entered password with the specific locker password
+		 //strcmp(strind1,string2) ~ compare the string 1 and string 2
 		 //strcmp = if the two of strings are same, print 0
 		 //			if not, don't print 0
-		if (strcmp(deliverySystem[x][y].passwd,try_passwd[PASSWD_LEN+1])!=0) 
+		if (strcmp(deliverySystem[x][y].passwd,try_passwd)!=0) 
 		{
 			return -1;	// failed 		
 		 }
@@ -93,7 +94,7 @@ static int inputPasswd(int x, int y) {
 		// if the try_passwd is masterpassword, the storage should open
 		//strcmp = if the two of strings are same, print 0
 		//			if not, don't print 0
-		else if(strcmp(try_passwd,masterPassword)==0)
+		else if(strcmp(masterPassword[PASSWD_LEN+1],try_passwd[PASSWD_LEN+1])==0)
 		{
 			return 0; //success
 		}
@@ -116,6 +117,7 @@ static int inputPasswd(int x, int y) {
 int str_backupSystem(char* filepath) {
 	
 	FILE* fp;
+	int i_row, j_column;
 	
 	// open the entered file as 'fopen'
 	// copy the contents of the delivery system as a function of "w" to open files
@@ -123,7 +125,7 @@ int str_backupSystem(char* filepath) {
 	  
 	fp =fopen(filepath,"w");
 	
-	// if (fp=NULL) = Fail- --> No content
+	// if (fp=NULL), Fail
 	if(fp==NULL)
 	{
 		printf("Can't work well for open the file.\n");
@@ -131,10 +133,30 @@ int str_backupSystem(char* filepath) {
 	}
 	
 	//Enter current storage() status in txt file 
-		// 
-		
+
+	//Repeat to verify that content is ingested throughout the storage.	
+	//systemSize[0] : row , systemSize[1] : column 
+	
+	//repeat for 'row'
+	for(i_row=0;i_row<systemSize[0];i_row++)
+	{
+		//repeat for 'column'
+		for(j_column=0;j_column<systemSize[1];j_column++)
+		{
+			//If deliverySystem.cnt is greater than 0, input the value stored deliverySystem in the filepath
+			if(deliverySystem[i_row][j_column].cnt>0)
+			{
+				// order of saving 
+					// row, column, building, room, password, context
+				fprintf(fp,"%d %d %d %d %s %s", i_row, j_column, deliverySystem[i_row][j_column].building,
+												deliverySystem[i_row][j_column].room, deliverySystem[i_row][j_column].passwd,
+												deliverySystem[i_row][j_column].context);
+			}
+		}
+	}	
 	
 	fclose(fp);
+	
 	return 0;
 }
 
