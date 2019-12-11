@@ -67,7 +67,7 @@ static void initStorage(int x, int y) {
 		deliverySystem[x][y].room = 0;		
 		deliverySystem[x][y].cnt = 0;
 		deliverySystem[x][y].passwd[PASSWD_LEN+1] = '\0';
-		deliverySystem[x][y].context = 0;		
+		deliverySystem[x][y].context = '\0';		
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -81,18 +81,29 @@ static int inputPasswd(int x, int y) {
 		printf("Please enter your password.\n"); 
 		scanf("%s", &try_passwd);
 		
-		//Compare the entered password with the specific locker password
-		if(try_passwd == deliverySystem[x][y].passwd) 
+	
+		 //Compare the entered password with the specific locker password
+		 //strcmp = if the two of strings are same, print 0
+		 //			if not, don't print 0
+		if (strcmp(deliverySystem[x][y].passwd,try_passwd[PASSWD_LEN+1])!=0) 
 		{
-			return 0;
-		 } 
+			return -1;	// failed 		
+		 }
 		 
-		 // if the password is not matching, notice user that It is wong password and return.
-		else 
+		// if the try_passwd is masterpassword, the storage should open
+		//strcmp = if the two of strings are same, print 0
+		//			if not, don't print 0
+		else if(strcmp(try_passwd,masterPassword)==0)
 		{
-			printf("It's wrong password. Please check it.\n");
-			return -1;			
-		 } 
+			return 0; //success
+		}
+
+		else
+		{	
+			return 0; // success
+					
+		  }  
+		
 	
 }
 
@@ -115,9 +126,13 @@ int str_backupSystem(char* filepath) {
 	// if (fp=NULL) = Fail- --> No content
 	if(fp==NULL)
 	{
-		printf("Can't work well");
+		printf("Can't work well for open the file.\n");
 		return -1;
 	}
+	
+	//Enter current storage() status in txt file 
+		// 
+		
 	
 	fclose(fp);
 	return 0;
@@ -274,10 +289,15 @@ int str_checkStorage(int x, int y) {
 //char passwd[] : password string (4 characters)
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char passwd[PASSWD_LEN+1], char msg[MAX_MSG_SIZE+1]) {
+		
 		deliverySystem[x][y].building = nBuilding;
 		deliverySystem[x][y].room = nRoom ;
-		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd[PASSWD_LEN+1];
-		deliverySystem[x][y].context = msg;
+		
+		//Use the 'strcat' to insert the delivery string.
+		//strcat = (target, Source); >>> Save source string to target string
+		strcat(deliverySystem[x][y].passwd,passwd);
+		strcat(deliverySystem[x][y].context,msg);
+		
 		deliverySystem[x][y].cnt ++;
 		storedCnt++;
 }
@@ -290,42 +310,18 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char passwd[PASSWD
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
 	
-		char try_passwd[PASSWD_LEN+1];
-	
-		printf("Please enter your password.\n"); //Enter Password
-		scanf("%s", &try_passwd);
+		//Check the password using the inputPasswd (int x, int y) function
+		inputPasswd(x,y);
 		
-		 //Compare the entered password with the specific locker password
-		 //strcmp = if the two of strings are same, print 0
-		 //			if not, don't print 0
-		if (strcmp(deliverySystem[x][y].passwd,try_passwd)!=0) 
-		{
-			printf("It's wrong password. Please check it.\n");
-			return -1;	// failed ot extract.		
-		 }
-		 
-		// if the try_passwd is masterpassword, the storage should open
-		//strcmp = if the two of strings are same, print 0
-		//			if not, don't print 0
-		else if(strcmp(try_passwd,masterPassword)==0)
-		{
-			//check the context of the storage
-			printf("THE context of package is %s", deliverySystem[x][y].context); 
-			// after extract the context, initialize the storage (x,y)
-			initStorage(x,y); 
-			
-		}
-
-		else
-		{	
-			//check the context of the storage
-			printf("THE context of package is %s", deliverySystem[x][y].context); 
-			// after extract the context, initialize the storage (x,y)
-			initStorage(x,y); 
-			
-			
-		  }  
-	 
+		//Only when the correct password has been entered through the function,
+		// the extraStorage function below will function (because it is return 0 only in that case)
+		//Therefore, have to do is take out the contents of the storage.	
+	
+		printf("THE context of package is %s", deliverySystem[x][y].context); 
+		
+		// after extract the context, initialize the storage (x,y)
+		initStorage(x,y); 
+	
 	return 0;
 }
 
@@ -335,25 +331,25 @@ int str_extractStorage(int x, int y) {
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
 	
-	int x; //the variable about the row 
-	int y; //the varialbe about the colunm
+	int cor_column; //coordinate of column
+	int cor_row; //coordinate of row
 	 
 	//Check from all structured arrangement to the last parcel shelf
 	
-	// there are a total of 6 columns, so the number of the last column number 5.
-	for(y=0;y<6;y++)
+	// the imformation of row is stored in systemSize[0]
+	for(cor_row=0;cor_row<systemSize[0];cor_row++)
 	{
-		// there are a total of 4 rows, so the number of the last column number 3.
-		for(x=0;x<4;x++)
+		// the imformation of column is stored in systemSize[1]
+		for(cor_column=0;cor_column<systemSize[1];cor_column++)
 		{
 	 		//Determine if the number of the building entered and the room number match the building number and the room number of the structure. 
-			if(deliverySystem[x][y].building == nBuilding && deliverySystem[x][y].room ==nRoom)
+			if(deliverySystem[cor_row][cor_column].building == nBuilding && deliverySystem[cor_row][cor_column].room ==nRoom)
 			{		
 				//print the all the cells (x,y) which has user package
-				printf("The user(live in room %d, building %d)'s package is in (%d,%d)\n", nRoom, nBuilding, x,y);
+				printf("The user(live in room %d, building %d)'s package is in (%d,%d)\n", nRoom, nBuilding, cor_row,cor_column);
 				
 				//return the number of packages the the storage system have
-				return (deliverySystem[x][y].cnt);
+				return (deliverySystem[cor_row][cor_column].cnt);
 			}
 		}
 	}
