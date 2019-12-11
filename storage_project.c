@@ -63,11 +63,11 @@ static void printStorageInside(int x, int y) {
 static void initStorage(int x, int y) {
 		//Initialize corresponding memory values using NULL to initialize one storage box by susing NULL.
 		// date of byte can be removed by NULL
-		deliverySystem[x][y].building = NULL; 
-		deliverySystem[x][y].room = NULL;		
-		deliverySystem[x][y].cnt = NULL;
-		deliverySystem[x][y].passwd[PASSWD_LEN+1] = NULL;
-		deliverySystem[x][y].context = NULL;		
+		deliverySystem[x][y].building = 0; 
+		deliverySystem[x][y].room = 0;		
+		deliverySystem[x][y].cnt = 0;
+		deliverySystem[x][y].passwd[PASSWD_LEN+1] = '\0';
+		deliverySystem[x][y].context = 0;		
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -177,7 +177,7 @@ int str_createSystem(char* filepath) {
 		for(j=0;j<systemSize[1];j++)
 			//Allocate as many memory as the number of courier strings ~ using function of "strlen"
 			//
-			deliverySystem[i][j].context = (char *)malloc(strlen(*context)* sizeof(char));
+			deliverySystem[i][j].context = (char *)malloc(strlen(context)* sizeof(char));
 	 }
 	
 	// put the package accroding to storage.txt file (first of all have to read it)
@@ -276,7 +276,7 @@ int str_checkStorage(int x, int y) {
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char passwd[PASSWD_LEN+1], char msg[MAX_MSG_SIZE+1]) {
 		deliverySystem[x][y].building = nBuilding;
 		deliverySystem[x][y].room = nRoom ;
-		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd;
+		deliverySystem[x][y].passwd [PASSWD_LEN+1]= passwd[PASSWD_LEN+1];
 		deliverySystem[x][y].context = msg;
 		deliverySystem[x][y].cnt ++;
 		storedCnt++;
