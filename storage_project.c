@@ -144,7 +144,7 @@ int str_backupSystem(char* filepath) {
 			{
 				//print the storage system status and setting value 
 				// order of saving >>> row, column, building, room, password, context
-				fprintf(fp,"%d %d %d %d %s %s", i_row, j_column, deliverySystem[i_row][j_column].building,
+				fprintf(fp,"%d %d %d %d %s %s\n", i_row, j_column, deliverySystem[i_row][j_column].building,
 												deliverySystem[i_row][j_column].room, deliverySystem[i_row][j_column].passwd,
 												deliverySystem[i_row][j_column].context);
 			}
@@ -331,19 +331,26 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char passwd[PASSWD
 //int x, int y : coordinate of the cell to extract
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
-	
-		//Check the password using the inputPasswd (int x, int y) function
-		inputPasswd(x,y);
 		
-		//Only when the correct password has been entered through the function,
-		// the extraStorage function below will function (because it is return 0 only in that case)
-		//Therefore, have to do is take out the contents of the storage.	
-	
-		printf("THE context of package is %s", deliverySystem[x][y].context); 
+		
+		int result_check; //Variables that receive return value as a result of password check function 
+		
+		//Check the password using the inputPasswd (int x, int y) function
+		
+		do{
+			//Result correct : 0 output
+			//Result non_correct : -1 Output
+			result_check = inputPasswd(x,y);
+			
+			//Only when the correct password has been entered through the function,
+			// the extraStorage function below will function (because it is return 0 only in that case)
+			//Therefore, have to do is take out the contents of the storage.	
+			printf("THE context of package is %s", deliverySystem[x][y].context); 
 		
 		// after extract the context, initialize the storage (x,y)
 		initStorage(x,y); 
-	
+		
+		} while(result_check !=0);
 	return 0;
 }
 
