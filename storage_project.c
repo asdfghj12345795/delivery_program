@@ -170,6 +170,7 @@ int str_createSystem(char* filepath) {
 	char context[1000];
 	int number_str;
 		
+	
 	//file open 
 	fp = fopen(filepath,"r");
 	
@@ -222,10 +223,10 @@ int str_createSystem(char* filepath) {
 		//Allocate as many memory as the number of courier strings at the context of aray
 		//Set context memory according to the size of the string.
 		//context is defined char and have array.
-		context = (char)malloc(number_str* sizeof(char));
+		context= (char)malloc(number_str* sizeof(char));
 	 
 		//Save text string for deliverySystem.context // use 'strcpy'
-		strcpy(deliverySystem.context,context);
+		strcpy(deliverySystem.context, context);
 		
 		// and add 1 to the package cnt(count in the cell) 
 		deliverySystem[inputrow][inputcolumn].cnt++;
