@@ -167,12 +167,16 @@ int str_createSystem(char* filepath) {
 	int inputrow,inputcolumn; // accordinate the package location
 	FILE* fp;
 	char c;
-	char context[1000];
 	int number_str; //Variables that store the length of a string in context
 		
 	
 	//file open 
 	fp = fopen(filepath,"r");
+	
+	if(fp==NULL)
+	{
+		return -1;
+	}
 	
 	//systemSize[0]  : row, systemSize[1] : column
 	//read row, column number and masterpassword from filepath
@@ -207,27 +211,20 @@ int str_createSystem(char* filepath) {
 			}
 		}
 	
+	for(i=0;i<systemSize[0];i++) {
+		for(j=0;j<systemSize[1];j++)
+			deliverySystem[i][j].context = (char *)malloc(100 * sizeof(char));
+	}
 
 	// put the package accroding to storage.txt file (first of all have to read it)
-	while( (c =fgetc(fp))!= EOF)
+	while( fscanf(fp, "%d %d", &inputrow, &inputcolumn)==2)
 	{
 		// put the package accroding to storage.txt file (first of all have to read it)
 		//read the file text in order of building number, room number, password, context,
 		//The first string is received by the context variable.
 		fscanf(fp, "%d %d %s %s", &deliverySystem[inputrow][inputcolumn].building, &deliverySystem[inputrow][inputcolumn].room,
-								  deliverySystem[inputrow][inputcolumn].passwd, context);
+								  deliverySystem[inputrow][inputcolumn].passwd, deliverySystem[inputrow][inputcolumn].context);
 		
-		//To figure out what is the path of context
-		
-		number_str = strlen(context);
-		
-		//Allocate as many memory as the number of courier strings at the context of aray
-		//Set context memory according to the size of the string.
-		//context is defined char and have array.
-		deliverySystem[inputrow][inputcolumn].context= (char*)malloc(number_str* sizeof(char));
-	 
-		//Save text string for deliverySystem.context // use 'strcpy'
-		strcpy(deliverySystem[inputrow][inputcolumn].context, context);
 		
 		// and add 1 to the package cnt(count in the cell) 
 		deliverySystem[inputrow][inputcolumn].cnt++;
