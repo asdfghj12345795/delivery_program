@@ -92,7 +92,7 @@ static int inputPasswd(int x, int y) {
 		// if the try_passwd is masterpassword, the storage should open
 		//strcmp = if the two of strings are same, print 0
 		//			if not, don't print 0
-		else if(strcmp(masterPassword[PASSWD_LEN+1],try_passwd[PASSWD_LEN+1])==0)
+		else if(strcmp(masterPassword,try_passwd)==0)
 		{
 			return 0; //success
 		}
@@ -341,6 +341,8 @@ int str_extractStorage(int x, int y) {
 			//Result correct : 0 output
 			//Result non_correct : -1 Output
 			result_check = inputPasswd(x,y);
+			printf("printing...\n");
+			fflush(stdin);
 			
 			//Only when the correct password has been entered through the function,
 			// the extraStorage function below will function (because it is return 0 only in that case)
