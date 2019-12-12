@@ -3,10 +3,6 @@
 #include <string.h>
 #include "storage.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "storage.h"
-
 #define N_BUILDING				10
 #define N_FLOOR					10
 #define N_ROOM					10
@@ -171,8 +167,8 @@ int str_createSystem(char* filepath) {
 	int inputrow,inputcolumn; // accordinate the package location
 	FILE* fp;
 	char c;
-	char* context;
-	
+	char context[1000];
+	int number_str;
 		
 	//file open 
 	fp = fopen(filepath,"r");
@@ -192,6 +188,7 @@ int str_createSystem(char* filepath) {
 
 		
 	// use 'if' to confirm allocated memory is NULL
+	// this member variable have to 0 in the first time
 	for(i=0;i<systemSize[i];i++)
 		{
 			for(j=0;j<systemSize[1];j++)
@@ -209,24 +206,27 @@ int str_createSystem(char* filepath) {
 			return -1;
 	}
 	
-	// create the *context by the number of string
-	for(i=0;i<systemSize[0];i++)
-	 {
-		for(j=0;j<systemSize[1];j++)
-			//Allocate as many memory as the number of courier strings ~ using function of "strlen"
-			//Set context memory according to the size of the string.
-			//Length of string: strlen (entered string)
-			deliverySystem[i][j].context = (char *)malloc(strlen(context)* sizeof(char));
-	 }
-	
 	// put the package accroding to storage.txt file (first of all have to read it)
 	while( (c =fgetc(fp))!= EOF)
 	{
 		// put the package accroding to storage.txt file (first of all have to read it)
-		//read the file text in order of building number, room number, password, contents,
+		//read the file text in order of building number, room number, password, context,
+		//The first string is received by the context variable.
 		fscanf(fp, "%d %d %s %s", &deliverySystem[inputrow][inputcolumn].building, &deliverySystem[inputrow][inputcolumn].room,
-								  deliverySystem[inputrow][inputcolumn].passwd, deliverySystem[i][j].context);
-	
+								  deliverySystem[inputrow][inputcolumn].passwd, context);
+		
+		//To figure out what is the path of context
+		
+		number_str = strlen(context);
+		
+		//Allocate as many memory as the number of courier strings at the context of aray
+		//Set context memory according to the size of the string.
+		//context is defined char and have array.
+		context = (char)malloc(number_str* sizeof(char));
+	 
+		//Save text string for deliverySystem.context // use 'strcpy'
+		strcpy(deliverySystem.context,context);
+		
 		// and add 1 to the package cnt(count in the cell) 
 		deliverySystem[inputrow][inputcolumn].cnt++;
 	}
