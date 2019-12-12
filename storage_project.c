@@ -162,13 +162,13 @@ int str_backupSystem(char* filepath) {
 //char* filepath : filepath and name to read config parameters (row, column, master password, past contexts of the delivery system
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
-	// i = column / j = row
+	// i = row / j = column
 	int i,j;  // to use the circular 
 	int inputrow,inputcolumn; // accordinate the package location
 	FILE* fp;
 	char c;
 	char context[1000];
-	int number_str;
+	int number_str; //Variables that store the length of a string in context
 		
 	
 	//file open 
@@ -185,12 +185,21 @@ int str_createSystem(char* filepath) {
 		for(i=0;i<systemSize[1];i++)
 		{
 			deliverySystem[i]=(storage_t*)malloc(systemSize[0]* sizeof(storage_t));		
+			
+			if(deliverySystem[i]==NULL)
+			{
+				printf("Dynamic memory allocation error");
+			
+				//failed to creat te system.
+				return -1;
+			}
+	
 		}
 
-		
+	// i = row / j = column
 	// use 'if' to confirm allocated memory is NULL
 	// this member variable have to 0 in the first time
-	for(i=0;i<systemSize[i];i++)
+	for(i=0;i<systemSize[0];i++)
 		{
 			for(j=0;j<systemSize[1];j++)
 			{
@@ -198,15 +207,7 @@ int str_createSystem(char* filepath) {
 			}
 		}
 	
-	
-	if(deliverySystem==NULL)
-	{
-			printf("Dynamic memory allocation error");
-			
-			//failed to creat te system.
-			return -1;
-	}
-	
+
 	// put the package accroding to storage.txt file (first of all have to read it)
 	while( (c =fgetc(fp))!= EOF)
 	{
@@ -223,10 +224,10 @@ int str_createSystem(char* filepath) {
 		//Allocate as many memory as the number of courier strings at the context of aray
 		//Set context memory according to the size of the string.
 		//context is defined char and have array.
-		context= (char)malloc(number_str* sizeof(char));
+		deliverySystem[inputrow][inputcolumn].context= (char*)malloc(number_str* sizeof(char));
 	 
 		//Save text string for deliverySystem.context // use 'strcpy'
-		strcpy(deliverySystem.context, context);
+		strcpy(deliverySystem[inputrow][inputcolumn].context, context);
 		
 		// and add 1 to the package cnt(count in the cell) 
 		deliverySystem[inputrow][inputcolumn].cnt++;
